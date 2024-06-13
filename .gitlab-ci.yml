@@ -1,31 +1,65 @@
-build-job:
-  tags:
-    - gitlab ci
-  stage: build
-  script:
-    - echo "Hello, $GITLAB_USER_LOGIN!"
+stages:
+  - zip_and_upload
 
-test-job1:
-  tags:
-    - gitlab ci
-  stage: test
-  script:
-    - echo "This job tests something"
+default:
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
 
-test-job2:
-  tags:
-    - gitlab ci
-  stage: test
-  script:
-    - echo "This job tests something, but takes more time than test-job1."
-    - echo "After the echo commands complete, it runs the sleep command for 20 seconds"
-    - echo "which simulates a test that runs 20 seconds longer than test-job1"
-    - sleep 20
+variables:
+  S3_BUCKET_NAME: "evgeny.lambda.functions"
 
-deploy-prod:
-  tags:
-    - gitlab ci
-  stage: deploy
+
+.zip_and_upload: &zip_and_upload
+  stage: zip_and_upload
   script:
-    - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
-  environment: production
+    - cd $DIRECTORY_NAME
+    - zip $FUNCTION_NAME.zip lambda_function.py
+    - echo "file zipped"
+    - aws s3 cp $FUNCTION_NAME.zip s3://$S3_BUCKET_NAME/
+    - echo "zip uploaded"
+    - aws lambda update-function-code --function-name $FUNCTION_NAME --s3-bucket $S3_BUCKET_NAME --s3-key $FUNCTION_NAME.zip
+    - echo "lambda updated"
+
+create_user_lambda_job:
+  <<: *zip_and_upload
+  variables:
+    DIRECTORY_NAME: "create_user_lambda"
+    FUNCTION_NAME: "create_users"
+  only:
+    changes:
+      - create_user_lambda/lambda_function.py
+
+csv_to_excel_lambda_job:
+  <<: *zip_and_upload
+  variables:
+    DIRECTORY_NAME: "csv_to_excel_lambda"
+    FUNCTION_NAME: "csvToExcel"
+  only:
+    changes:
+      - csv_to_excel_lambda/lambda_function.py
+
+discord_message_lambda_job:
+  <<: *zip_and_upload
+  variables:
+    DIRECTORY_NAME: "discord_message_lambda"
+    FUNCTION_NAME: "DiscordNotify"
+  only:
+    changes:
+      - discord_message_lambda/lambda_function.py
+
+new_project_lambda_job:
+  <<: *zip_and_upload
+  variables:
+    DIRECTORY_NAME: "new_project_lambda"
+    FUNCTION_NAME: "createProjectExecutable" 
+  only:
+    changes:
+      - new_project_lambda/lambda_function.py
+
+wiki_tops_lambda_job:
+  <<: *zip_and_upload
+  variables:
+    DIRECTORY_NAME: "wiki_tops_lambda"
+    FUNCTION_NAME: "wikiScript"
+  only:
+    changes:
+      - wiki_tops_lambda/lambda_function.py
