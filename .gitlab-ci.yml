@@ -23,7 +23,7 @@ create_user_lambda_job:
   <<: *zip_and_upload
   variables:
     DIRECTORY_NAME: "create_user_lambda"
-    FUNCTION_NAME: "create_users"
+    FUNCTION_NAME: "gitlab_create_user"
   only:
     changes:
       - create_user_lambda/lambda_function.py
@@ -32,7 +32,7 @@ csv_to_excel_lambda_job:
   <<: *zip_and_upload
   variables:
     DIRECTORY_NAME: "csv_to_excel_lambda"
-    FUNCTION_NAME: "csvToExcel"
+    FUNCTION_NAME: "lambda_csv_to_excel"
   only:
     changes:
       - csv_to_excel_lambda/lambda_function.py
@@ -41,7 +41,7 @@ discord_message_lambda_job:
   <<: *zip_and_upload
   variables:
     DIRECTORY_NAME: "discord_message_lambda"
-    FUNCTION_NAME: "DiscordNotify"
+    FUNCTION_NAME: "lambda_discord_msg"
   only:
     changes:
       - discord_message_lambda/lambda_function.py
@@ -50,7 +50,7 @@ new_project_lambda_job:
   <<: *zip_and_upload
   variables:
     DIRECTORY_NAME: "new_project_lambda"
-    FUNCTION_NAME: "createProjectExecutable" 
+    FUNCTION_NAME: "gitlab_new_project" 
   only:
     changes:
       - new_project_lambda/lambda_function.py
@@ -59,7 +59,16 @@ wiki_tops_lambda_job:
   <<: *zip_and_upload
   variables:
     DIRECTORY_NAME: "wiki_tops_lambda"
-    FUNCTION_NAME: "wikiScript"
+    FUNCTION_NAME: "wikipedia_func"
   only:
     changes:
       - wiki_tops_lambda/lambda_function.py
+
+backup_lambda_job:
+  <<: *zip_and_upload
+  variables:
+    DIRECTORY_NAME: "backup_lambda"
+    FUNCTION_NAME: "lambda-Backup"
+  only:
+    changes:
+      - backup_lambda/lambda_function.py
