@@ -10,6 +10,8 @@ variables:
 
 .zip_and_upload: &zip_and_upload
   stage: zip_and_upload
+  tags:
+    -  gitlab ci
   script:
     - cd $DIRECTORY_NAME
     - zip $FUNCTION_NAME.zip lambda_function.py
