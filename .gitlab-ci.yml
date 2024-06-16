@@ -12,6 +12,14 @@ variables:
   stage: zip_and_upload
   tags:
     -  gitlab ci
+  before_script:
+    # Install AWS CLI and zip
+    - apt-get update && apt-get install -y awscli
+    - apt-get install -y zip unzip
+    # Authenticate with AWS
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+    - aws configure set default.region $AWS_REGION
   script:
     - cd $DIRECTORY_NAME
     - zip $FUNCTION_NAME.zip lambda_function.py
