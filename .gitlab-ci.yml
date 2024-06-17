@@ -2,11 +2,18 @@ stages:
   - zip_and_upload
 
 default:
+  before_script:
+    - docker info
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
 
 variables:
   S3_BUCKET_NAME: "evgeny.lambda.functions"
 
+
+build_image:
+  script:
+    - docker build -t my-docker-image .
+    - docker run my-docker-image /script/to/run/tests
 
 .zip_and_upload: &zip_and_upload
   stage: zip_and_upload
@@ -57,7 +64,7 @@ new_project_lambda_job:
   <<: *zip_and_upload
   variables:
     DIRECTORY_NAME: "new_project_lambda"
-    FUNCTION_NAME: "gitlab_new_project" 
+    FUNCTION_NAME: "lambda_gitlab_new_project"
   only:
     changes:
       - new_project_lambda/lambda_function.py
