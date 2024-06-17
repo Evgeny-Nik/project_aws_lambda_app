@@ -10,10 +10,6 @@ variables:
   S3_BUCKET_NAME: "evgeny.lambda.functions"
 
 
-build_image:
-  script:
-    - docker build -t my-docker-image .
-    - docker run my-docker-image /script/to/run/tests
 
 .zip_and_upload: &zip_and_upload
   stage: zip_and_upload
@@ -32,6 +28,12 @@ build_image:
     - echo "zip uploaded"
     - aws lambda update-function-code --function-name $FUNCTION_NAME --s3-bucket $S3_BUCKET_NAME --s3-key $FUNCTION_NAME.zip
     - echo "lambda updated"
+
+build_image_job:
+  stage: .pre
+  script:
+    - docker build -t my-docker-image .
+    - docker run my-docker-image /script/to/run/tests
 
 create_user_lambda_job:
   <<: *zip_and_upload
@@ -86,3 +88,4 @@ backup_lambda_job:
   only:
     changes:
       - backup_lambda/lambda_function.py
+
