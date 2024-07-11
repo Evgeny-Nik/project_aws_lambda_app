@@ -15,13 +15,13 @@ def lambda_handler(event, context):
         }
 
     # load env vars
-    BUCKET_NAME = os.getenv("BUCKET_NAME")
-    FILE_KEY = os.getenv("FILE_KEY")
+    bucket_name = os.getenv("BUCKET_NAME")
+    file_key = os.getenv("FILE_KEY")
 
     # Download the existing file from S3
-    download_path = '/tmp/' + FILE_KEY
+    download_path = '/tmp/' + file_key
     try:
-        s3_client.download_file(BUCKET_NAME, FILE_KEY, download_path)
+        s3_client.download_file(bucket_name, file_key, download_path)
     except Exception as e:
         return {
             'statusCode': 500,
@@ -59,7 +59,7 @@ def lambda_handler(event, context):
 
     # Upload the updated file back to S3
     try:
-        s3_client.upload_file(download_path, BUCKET_NAME, FILE_KEY)
+        s3_client.upload_file(download_path, bucket_name, file_key)
     except Exception as e:
         return {
             'statusCode': 500,
@@ -67,21 +67,8 @@ def lambda_handler(event, context):
         }
 
     # Generate the download link for the S3 file
-    s3_file_url = f"https://{BUCKET_NAME}.s3.amazonaws.com/{FILE_KEY}"
+    s3_file_url = f"https://{bucket_name}.s3.amazonaws.com/{file_key}"
 
-    # Read the updated file content
-    # try:
-    #    with open(download_path, 'r') as target_file:
-    #        updated_content = target_file.read()
-    # except Exception as e:
-    #    return {
-    #        'statusCode': 500,
-    #        'body': f"Failed to read the updated file: {str(e)}"
-    #    }
-    # return {
-    #    'statusCode': 200,
-    #    'body': updated_content
-    # }
     return {
         'statusCode': 200,
         'download_link': s3_file_url

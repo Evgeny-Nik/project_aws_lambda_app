@@ -83,7 +83,9 @@ jobs:
       - name: List changed files
         id: file-list
         run: |
-          changed_files=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep 'lambda_function.py' || true)
+          changed_files=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} |
+                    grep -E -v '^(web_app/|\.github/)' |  # Exclude files matching 'web_app/**' and '.github/**'
+                    grep '.py' || true)
           echo "CHANGED_FILES=$changed_files" >> $GITHUB_OUTPUT
 
       #- name: Install Python dependencies
