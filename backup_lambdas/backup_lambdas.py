@@ -6,6 +6,7 @@ s3 = boto3.client('s3')
 
 
 
+
 def lambda_handler(event, context):
     source_bucket = os.getenv('SOURCE_BUCKET')
     backup_bucket = os.getenv('BACKUP_BUCKET')

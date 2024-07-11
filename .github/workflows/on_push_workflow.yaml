@@ -101,7 +101,9 @@ jobs:
           done
 
       - name: Set output for next job
-        run: echo "::set-output name=file_list::${{ env.CHANGED_FILES }}"
+        run: |
+          echo "::set-output name=file_list::${{ env.CHANGED_FILES }}"
+          echo "${{ env.CHANGED_FILES }}"
 
   zip_and_upload_template:
     runs-on: ubuntu-latest
