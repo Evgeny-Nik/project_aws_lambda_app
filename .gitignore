@@ -4,6 +4,7 @@
 !*.py
 !*.html
 !*.yaml
+!version.txt
 !requirements.txt
 !Dockerfile
 !.env-example

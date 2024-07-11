@@ -1,7 +1,9 @@
-name: Zip and Upload Lambda Functions
+name: CI/CD for APP communicating with AWS API Gateway and Zip and Upload Lambda Functions
 
 on:
   push:
+    branches:
+      - 'master'
     paths:
       - 'gitlab_create_user/**'
       - 'csv_to_excel/**'
@@ -9,18 +11,54 @@ on:
       - 'gitlab_new_project/**'
       - 'wiki_tops/**'
       - 'backup_lambdas/**'
+      - 'web_app/**'
 
 jobs:
   build_app:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.event.head_commit.modified | contains('web_app/')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Set up Git credentials
+        env:
+          VERSION_FILE: 'web_app/version.txt'
+          GIT_CRED_ID: ${{ secrets.GIT_CRED_ID }}
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git remote set-url origin https://github.com/${{ github.repository }}.git
+
+      - name: Read current version
+        id: read_version
+        run: |
+          echo "::set-output name=VERSION::$(cat VERSION_FILE)"
+
+      - name: Increment version
+        id: increment_version
+        if: steps.read_version.outputs.VERSION != ''
+        run: |
+          current_version=$(echo "${{ steps.read_version.outputs.VERSION }}")
+          IFS='.' read -r major minor patch <<< "$current_version"
+          patch=$((patch + 1))
+          new_version="${major}.${minor}.${patch}"
+          echo "$new_version" > VERSION_FILE
+          echo "$new_version" >> $GITHUB_ENV
+          echo "::set-output name=NEW_VERSION::$new_version"
+
+      - name: Commit version increment
+        if: steps.increment_version.outputs.NEW_VERSION != ''
+        run: |
+          git add VERSION_FILE
+          git status
+          git commit -m "Increment version to ${{ steps.increment_version.outputs.NEW_VERSION }}"
+          git push origin HEAD:${{ github.ref }}
+
       - name: Build and Tag Docker Image
         run: |
-          docker build --build-arg APP_VERSION=${{ env.VERSION }} -t ${{ secrets.DOCKERHUB_USERNAME }}/lambda_app:${{ env.VERSION }} .
-          docker tag ${{ secrets.DOCKERHUB_USERNAME }}/lambda_app:${{ env.VERSION }} ${{ secrets.DOCKERHUB_USERNAME }}/lambda_app:latest
+          docker build --build-arg APP_VERSION=${{ env.NEW_VERSION }} -t ${{ secrets.DOCKERHUB_USERNAME }}/lambda_app:${{ env.NEW_VERSION }} .
+          docker tag ${{ secrets.DOCKERHUB_USERNAME }}/lambda_app:${{ env.NEW_VERSION }} ${{ secrets.DOCKERHUB_USERNAME }}/lambda_app:latest
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -30,41 +68,62 @@ jobs:
 
       - name: Push Docker Images
         run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/lambda_app:${{ env.VERSION }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/lambda_app:${{ env.NEW_VERSION }}
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/lambda_app:latest
 
-  zip_and_upload_lambda:
+  test_changed_files:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        function_name:
-          - { directory: 'backup_lambdas', function: 'lambda-Backup' }
-          - { directory: 'csv_to_excel', function: 'csv_to_excel' }
-          - { directory: 'discord_message', function: 'discord_msg' }
-          - { directory: 'gitlab_create_user', function: 'gitlab_create_user' }
-          - { directory: 'gitlab_new_project', function: 'gitlab_new_project' }
-          - { directory: 'wiki_tops', function: 'wikipedia_func' }
+    outputs:
+      file_list: ${{ steps.file-list.outputs.CHANGED_FILES }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: List changed files
+        id: file-list
+        run: |
+          changed_files=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep 'lambda_function.py' || true)
+          echo "CHANGED_FILES=$changed_files" >> $GITHUB_OUTPUT
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run pytest on changed files
+        run: |
+          for file_path in ${{ steps.file-list.outputs.CHANGED_FILES }}; do
+            folder_path=$(dirname $file_path)
+            cd ${{ github.workspace }}/$folder_path
+            # pytest test.py this line will be implement in the future when each function has it's own test file
+          done
+
+  zip_and_upload_template:
+    runs-on: ubuntu-latest
+    needs: test_changed_files
+    env:
+      LIST: ${{ needs.test_changed_files.outputs.file_list }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Zip Lambda function
+      - name: List changed files (inherited from test_changed_files)
         run: |
-          cd ${{ matrix.directory }}
-          zip ${{ matrix.function }}.zip lambda_function.py
-          echo "file zipped"
+          echo "Changed files:"
+          echo "${{ env.LIST }}"
 
-      - name: Upload to S3
-        run: aws s3 cp ${{ matrix.function }}.zip s3://evgeny.lambda.functions/
-
-      - name: Update Lambda function
-        run: aws lambda update-function-code --function-name ${{ matrix.function }} --s3-bucket evgeny.lambda.functions --s3-key ${{ matrix.function }}.zip
-        echo "lambda updated"
+      - name: Zip and upload Lambda function
+        run: |
+          for file_path in ${{ env.LIST }}; do
+            folder_path=$(dirname $file_path)
+            cd ${{ github.workspace }}/$folder_path
+            echo "Deploying Lambda function in folder: $folder_path"
+            pwd
+            zip -r $folder_path.zip .
+            ls -la
+            aws s3 cp $folder_path.zip s3://${{ secrets.S3_BUCKET_NAME }}/
+            function_name=$(basename $folder_path)
+            aws lambda update-function-code --function-name $function_name --s3-bucket ${{ secrets.S3_BUCKET_NAME }} --s3-key $folder_path.zip
+          done
