@@ -12,6 +12,7 @@ on:
       - 'wiki_tops/**'
       - 'backup_lambdas/**'
       - 'web_app/**'
+      - '.github/**'
 
 jobs:
   build_app:
