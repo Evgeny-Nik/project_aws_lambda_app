@@ -16,7 +16,7 @@ on:
 jobs:
   build_app:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.event.head_commit.modified | contains('web_app/')
+    if: github.event_name == 'push' && contains(github.event.head_commit.modified, 'web_app/')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
