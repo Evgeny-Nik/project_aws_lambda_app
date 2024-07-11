@@ -86,8 +86,8 @@ jobs:
           changed_files=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep 'lambda_function.py' || true)
           echo "CHANGED_FILES=$changed_files" >> $GITHUB_OUTPUT
 
-      - name: Install Python dependencies
-        run: pip install -r requirements.txt
+      #- name: Install Python dependencies
+      #  run: pip install -r requirements.txt
 
       - name: Run pytest on changed files
         run: |
