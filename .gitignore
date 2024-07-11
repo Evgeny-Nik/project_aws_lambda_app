@@ -1,0 +1,11 @@
+*
+
+!*/
+!*.py
+!*.html
+!*.yaml
+!requirements.txt
+!Dockerfile
+!.env-example
+!.dockerignore
+!.gitignore

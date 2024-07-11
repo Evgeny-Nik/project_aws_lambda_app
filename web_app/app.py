@@ -1,26 +1,26 @@
-# app.py
 from flask import Flask, request, render_template, jsonify, redirect, url_for
 import requests
 import base64
-import json
 import os
+from dotenv import load_dotenv  # to load api_key from .env file together with os.getenv()
 
 app = Flask(__name__)
 
-# Endpoint of your Lambda function
-LAMBDA_CSV = "https://sq8mf556gl.execute-api.eu-north-1.amazonaws.com/test/convert"
-LAMBDA_DISCORD = "https://sq8mf556gl.execute-api.eu-north-1.amazonaws.com/test/discord"
-LAMBDA_GITLAB_USER = "https://sq8mf556gl.execute-api.eu-north-1.amazonaws.com/test/gitlab_user_create"
-LAMBDA_PROJECT = "https://sq8mf556gl.execute-api.eu-north-1.amazonaws.com/test/gitlab_new_project"
-LAMBDA_WIKI = "https://sq8mf556gl.execute-api.eu-north-1.amazonaws.com/test/wiki"
+load_dotenv()
+
+LAMBDA_CSV = os.getenv('LAMBDA_CSV')
+LAMBDA_DISCORD = os.getenv('LAMBDA_DISCORD')
+LAMBDA_GITLAB_USER = os.getenv('LAMBDA_GITLAB_USER')
+LAMBDA_GITLAB_PROJECT = os.getenv('LAMBDA_GITLAB_PROJECT')
+LAMBDA_WIKI = os.getenv('LAMBDA_WIKI')
 
 
 @app.route('/')
 def index():
     download_link = request.args.get('download_link')
     if download_link is None:
-        download_link = "no download link for you"
-    return render_template('csv_to_excel.html', download_link=download_link)
+        download_link = "no download link found"
+    return render_template('index.html', download_link=download_link)
 
 
 @app.route('/send_sheet', methods=['POST'])
@@ -90,7 +90,7 @@ def create_project():
     file_extension = request.form.get('file_extension')
 
     # Send data to API Gateway
-    response = requests.post(LAMBDA_PROJECT, json={
+    response = requests.post(LAMBDA_GITLAB_PROJECT, json={
         'project_name': project_name,
         'file_extension': file_extension
     })
@@ -102,10 +102,12 @@ def create_project():
     else:
         return "Error: Unable to create project", 500
 
+
 @app.route('/success')
 def success():
     download_link = request.args.get('link')
     return render_template('success.html', download_link=download_link)
+
 
 @app.route('/wiki', methods=['POST'])
 def wiki_func():

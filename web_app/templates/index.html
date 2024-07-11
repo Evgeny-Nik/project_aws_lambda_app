@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utility Application</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Utility Application</h1>
+
+        <!-- CSV to XLSX Converter -->
+        <div class="card mt-4">
+            <div class="card-header">
+                CSV to XLSX Converter
+            </div>
+            <div class="card-body">
+                <form action="/convert" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="csv_file">Upload CSV File:</label>
+                        <input type="file" class="form-control" id="csv_file" name="csv_file" accept=".csv" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Convert to XLSX</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Create Gitlab Users Via Google Sheet URL -->
+        <div class="card mt-4">
+            <div class="card-header">
+                Create Gitlab Users Via Google Sheet URL
+            </div>
+            <div class="card-body">
+                <form action="/send_sheet" method="post">
+                    <div class="form-group">
+                        <label for="google_sheet_url">Google Sheet URL:</label>
+                        <input type="text" class="form-control" id="google_sheet_url" name="google_sheet_url" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Get Summary Info From Wikipedia -->
+        <div class="card mt-4">
+            <div class="card-header">
+                Get Summary Info From Wikipedia
+            </div>
+            <div class="card-body">
+                <form action="/wiki" method="post">
+                    <div class="form-group">
+                        <label for="wiki_topic">Wikipedia Topic:</label>
+                        <input type="text" class="form-control" id="wiki_topic" name="wiki_topic" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+                {% if download_link %}
+                <div class="mt-3">
+                    <h5>Wikipedia Summary Download Link:</h5>
+                    <a href="{{ download_link }}" class="btn btn-success">{{ download_link }}</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Create a New Project -->
+        <div class="card mt-4">
+            <div class="card-header">
+                Create a New Project
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('create_project') }}" method="post">
+                    <div class="form-group">
+                        <label for="project_name">Project Name:</label>
+                        <input type="text" class="form-control" id="project_name" name="project_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="file_extension">File Extension:</label>
+                        <input type="text" class="form-control" id="file_extension" name="file_extension" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Project</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Send Discord Message -->
+        <div class="card mt-4">
+            <div class="card-header">
+                Send Discord Message
+            </div>
+            <div class="card-body">
+                <form action="/discord" method="post">
+                    <div class="form-group">
+                        <label for="discord_msg">Discord Message:</label>
+                        <input type="text" class="form-control" id="discord_msg" name="discord_msg" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
