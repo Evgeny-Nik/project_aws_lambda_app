@@ -4,7 +4,6 @@ import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 
 
-
 def create_project(proj_name, giturl):
     token = os.environ.get("GIT_TOKEN")
     gl = gitlab.Gitlab(url=giturl, private_token=token)
