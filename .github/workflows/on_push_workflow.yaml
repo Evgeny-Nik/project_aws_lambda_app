@@ -86,8 +86,10 @@ jobs:
           changed_files=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} |
                     grep -E -v '^(web_app/|\.github/)' |  # Exclude files matching 'web_app/**' and '.github/**'
                     grep '.py' || true)
-          echo "CHANGED_FILES=$changed_files" >> $GITHUB_ENV
+          echo "$changed_files"
           echo "CHANGED_FILES=$changed_files" >> $GITHUB_OUTPUT
+          echo "${{ env.CHANGED_FILES }}"
+          echo "${{ steps.file-list.outputs.CHANGED_FILES }}"
 
       #- name: Install Python dependencies
       #  run: pip install -r requirements.txt
