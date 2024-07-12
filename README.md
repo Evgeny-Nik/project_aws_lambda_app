@@ -60,6 +60,7 @@ This workflow zips and uploads Lambda functions to S3 and updates them. It inclu
   - `lambda_function.py`: runs on a cronjob to backup the S3 bucket containing the lambda functions daily, weekly and monthly
 
 ```markdown
+
     | Required Environment Variables | Description |
     | --- | --- |
     |`SOURCE_BUCKET` | Name of Lambda functions' S3 Bucket |
