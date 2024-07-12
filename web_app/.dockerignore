@@ -2,7 +2,7 @@
 
 !*.py
 !version.txt
-!requierements.txt
+!requirements.txt
 !.env
 !*.html
 !templates/
