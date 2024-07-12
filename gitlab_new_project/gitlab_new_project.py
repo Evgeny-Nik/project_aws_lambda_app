@@ -4,9 +4,9 @@ import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 
 
-def create_project(proj_name, giturl):
-    token = os.environ.get("GIT_TOKEN")
-    gl = gitlab.Gitlab(url=giturl, private_token=token)
+def create_project(proj_name, gitlab_url):
+    token = os.environ.get("GITLAB_TOKEN")
+    gl = gitlab.Gitlab(url=gitlab_url, private_token=token)
     try:
         project = gl.projects.create({'name': proj_name})
     except gitlab.exceptions.GitlabCreateError as e:
@@ -27,7 +27,7 @@ def create_project(proj_name, giturl):
     return {"project_path": project.path_with_namespace, "token": access_token.token}
 
 
-def generate_code_file(filename, access_token_name, private_token, gitlab_url, project_path, project_name,
+def generate_code_file(filename, gitlab_username, private_token, gitlab_url, project_path, project_name,
                        file_extension):
     tmp_filename = os.path.join('/tmp', filename)
     code = f"""
@@ -40,7 +40,7 @@ def create_project(project_name, file_extension, project_path):
     with open(file_path, 'w') as file:
         pass
 
-    http_url = f"http://{access_token_name}:{private_token}@{gitlab_url[7:]}/{project_path}.git"
+    http_url = f"http://{gitlab_username}:{private_token}@{gitlab_url[7:]}/{project_path}.git"
     os.system(f'cd {project_name} && git init && git remote add origin {{http_url}}')
     os.system(f'cd {project_name} && git add . && git commit -m "Initial commit" && git push -u origin master')
 
@@ -113,9 +113,9 @@ def lambda_handler(event, context):
             'body': f'Failed to get instance IP: {str(e)}'
         }
 
-    git_url = "http://" + instance_ip
+    gitlab_url = "http://" + instance_ip
     try:
-        dictionary_values = create_project(project_name, git_url)
+        dictionary_values = create_project(project_name, gitlab_url)
     except Exception as e:
         return {
             'statusCode': 500,
@@ -123,11 +123,11 @@ def lambda_handler(event, context):
         }
 
     token = dictionary_values.get('token')
-    access_token_name = os.getenv('GIT_ADMIN')
+    gitlab_username = os.getenv('GITLAB_USER')
     project_path = dictionary_values.get('project_path')
     py_file = "agent_setup.py"
     try:
-        generate_code_file(py_file, access_token_name, token, git_url, project_path, project_name, file_extension)
+        generate_code_file(py_file, gitlab_username, token, gitlab_url, project_path, project_name, file_extension)
     except Exception as e:
         return {
             'statusCode': 500,

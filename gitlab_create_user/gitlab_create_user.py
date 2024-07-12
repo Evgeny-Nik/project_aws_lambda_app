@@ -1,5 +1,6 @@
 import gitlab
 import pandas as pd
+import boto3
 import os
 import re
 
@@ -89,11 +90,29 @@ def create_user_project(gl, tar_group, tar_user):
         return project
 
 
-def lambda_handler(event, context):
-    gitlab_admin_token = os.getenv("GITLAB_ADMIN_TOKEN")
-    gitlab_host = os.getenv("GITLAB_HOST")
+def get_instance_ip(instance_id):
+    try:
+        ec2 = boto3.resource('ec2')
+        instance = ec2.Instance(instance_id)
+        public_ip = instance.public_ip_address
+        return public_ip
+    except Exception as e:
+        raise RuntimeError(f"Error retrieving IP address for instance {instance_id}: {str(e)}")
 
-    gl = gitlab.Gitlab(url=f'{gitlab_host}', private_token=f'{gitlab_admin_token}')
+
+def lambda_handler(event, context):
+    gitlab_token = os.getenv("GITLAB_TOKEN")
+    try:
+        instance_id = os.getenv('GITLAB_INSTANCE_ID')
+        instance_ip = get_instance_ip(instance_id)
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'body': f'Failed to get instance IP: {str(e)}'
+        }
+
+    gitlab_url = "http://" + instance_ip
+    gl = gitlab.Gitlab(url=f'{gitlab_url}', private_token=f'{gitlab_token}')
     google_sheet_url = event.get('google_sheet_url')
     if not google_sheet_url:
         return {
