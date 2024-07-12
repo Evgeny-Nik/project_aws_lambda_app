@@ -23,12 +23,12 @@ jobs:
       - name: List changed files
         id: file-list
         run: |
-          git diff-tree --no-commit-id --name-only -r HEAD
-          git diff-tree --no-commit-id --name-only -r HEAD | grep -E -v '^(web_app/|\.github/)'
-          git diff-tree --no-commit-id --name-only -r HEAD | grep -E -v '^(web_app/|\.github/)' | grep '.py'
-          git diff-tree --no-commit-id --name-only -r ${{ github.sha }}
-          git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep -E -v '^(web_app/|\.github/)'
-          git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep -E -v '^(web_app/|\.github/)' | grep '.py'
+          git diff-tree --no-commit-id --name-only -r HEAD || echo "No matching files found"
+          git diff-tree --no-commit-id --name-only -r HEAD | grep -E -v '^(web_app/|\.github/)' || echo "No matching files found"
+          git diff-tree --no-commit-id --name-only -r HEAD | grep -E -v '^(web_app/|\.github/)' | grep '.py' || echo "No matching files found"
+          git diff-tree --no-commit-id --name-only -r ${{ github.sha }} || echo "No matching files found"
+          git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep -E -v '^(web_app/|\.github/)' || echo "No matching files found"
+          git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep -E -v '^(web_app/|\.github/)' | grep '.py' || echo "No matching files found"
           changed_files=$(git diff-tree --no-commit-id --name-only -r HEAD |
                         grep -E -v '^(web_app/|\.github/)' |
                         grep '.py' || true)
