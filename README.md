@@ -61,16 +61,16 @@ This workflow zips and uploads Lambda functions to S3 and updates them. It inclu
 
 ```markdown
 
-    | Required Environment Variables | Description |
-    | --- | --- |
-    |`SOURCE_BUCKET` | Name of Lambda functions' S3 Bucket |
-    |`BACKUP_BUCKET` | Name of backup S3 Bucket |
+| Required Environment Variables | Description |
+| --- | --- |
+|`SOURCE_BUCKET` | Name of Lambda functions' S3 Bucket |
+|`BACKUP_BUCKET` | Name of backup S3 Bucket |
 
-    | Required Trigger |
-    | --- | --- |
-    |  `EventBridge` | Daily |
-    |  `EventBridge` | Weekly |
-    |  `EventBridge` | Monthly |
+| Required Trigger |
+| --- | --- |
+|  `EventBridge` | Daily |
+|  `EventBridge` | Weekly |
+|  `EventBridge` | Monthly |
 ```
 - **csv_to_excel**
   - `lambda_function.py`: Converts CSV files to Excel format.
