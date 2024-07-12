@@ -51,23 +51,23 @@ This workflow zips and uploads Lambda functions to S3 and updates them. It inclu
 - **Zip and Upload Lambda Function**: Zips the changed files and uploads them to S3, then updates the corresponding Lambda functions.
 
 
-## Reproducing the Project
-
+<details>
+<summary>Reproducing the Project</summary>
 ## Lambda Functions:
 ### Overview
 - **lambda-Backup**
   - `lambda_function.py`: runs on a cronjob to backup the S3 bucket containing the lambda functions daily, weekly and monthly
 
-    Required Environment Variables:
-      -
-      `SOURCE_BUCKET`     | Name of Lambda functions' S3 Bucket
-      `BACKUP_BUCKET`     | Name of backup S3 Bucket
+    | Required Environment Variables |
+    | --- | --- |
+    |`SOURCE_BUCKET` | Name of Lambda functions' S3 Bucket |
+    |`BACKUP_BUCKET` | Name of backup S3 Bucket |
 
-    Required Trigger:
-      -
-      `EventBridge`       | Daily
-      `EventBridge`       | Weekly
-      `EventBridge`       | Monthly
+    | Required Trigger |
+    | --- | --- |
+    |  `EventBridge` | Daily |
+    |  `EventBridge` | Weekly |
+    |  `EventBridge` | Monthly |
 
 - **csv_to_excel**
   - `lambda_function.py`: Converts CSV files to Excel format.
@@ -190,6 +190,7 @@ LAMBDA_WIKI = "<AWS_API_Gateway_Link_goes_here>/wiki"
 ```bash
 docker run ${DOCKERHUB_USERNAME}/github_app:latest
 ```
+</details>
 
 ### GitHub Actions Plugins Used
 
