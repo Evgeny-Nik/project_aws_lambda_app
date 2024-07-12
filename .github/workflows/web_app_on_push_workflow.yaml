@@ -15,7 +15,7 @@ jobs:
       run:
         working-directory: web_app
     env:
-      VERSION_FILE: "web_app/version.txt"
+      VERSION_FILE: "version.txt"
 
     steps:
       - name: Checkout repository
