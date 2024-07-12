@@ -16,7 +16,6 @@ on:
 jobs:
   test_changed_files:
     runs-on: ubuntu-latest
-    output:
 
     steps:
       - name: Checkout repository
