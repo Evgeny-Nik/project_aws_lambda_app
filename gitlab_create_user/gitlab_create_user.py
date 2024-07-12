@@ -108,9 +108,9 @@ def lambda_handler(event, context):
             'body': f'Failed to fetch data {e}'
         }
 
-    group_name = 'potatoes'
+    group_name = os.getenv('GITLAB_GROUP_NAME')
     try:
-        target_group = create_gitlab_group(gl, group_name, 'My awesome potatoes group')
+        target_group = create_gitlab_group(gl, group_name, os.getenv('GITLAB_GROUP_DESC'))
     except Exception as e:
         return {
             'statusCode': 500,
