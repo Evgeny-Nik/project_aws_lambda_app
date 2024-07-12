@@ -61,6 +61,9 @@ jobs:
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Download changed files environment file
         uses: actions/download-artifact@v2
         with:
@@ -76,8 +79,6 @@ jobs:
           for file_path in $file_list; do
             folder_path=$(dirname $file_path)
             echo "Deploying Lambda function in folder: $folder_path"
-            echo "${{ github.workspace }}"
-            ls -la
             cd ${{ github.workspace }}/$folder_path
             pwd
             zip -r $folder_path.zip .
