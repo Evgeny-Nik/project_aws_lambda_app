@@ -10,3 +10,4 @@
 !.env-example
 !.dockerignore
 !.gitignore
+!README.md
