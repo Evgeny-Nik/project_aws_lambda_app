@@ -4,7 +4,7 @@ import os
 
 s3_client = boto3.client('s3')
 
-
+#
 def lambda_handler(event, context):
     # Get the topic and S3 bucket/key from the event
     topic = event.get('topic')

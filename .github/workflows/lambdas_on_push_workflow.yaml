@@ -81,9 +81,9 @@ jobs:
             echo "Deploying Lambda function in folder: $folder_path"
             cd ${{ github.workspace }}/$folder_path
             pwd
-            zip -r $folder_path.zip .
+            function_name=$(basename $file_path)
+            zip -r $function_name.zip .
             ls -la
-            aws s3 cp $folder_path.zip s3://${{ secrets.S3_BUCKET_NAME }}/
-            function_name=$(basename $folder_path)
-            aws lambda update-function-code --function-name $function_name --s3-bucket ${{ secrets.S3_BUCKET_NAME }} --s3-key $folder_path.zip
+            aws s3 cp $function_name.zip s3://${{ secrets.S3_BUCKET_NAME }}/
+            aws lambda update-function-code --function-name $function_name --s3-bucket ${{ secrets.S3_BUCKET_NAME }} --s3-key $function_name.zip
           done
