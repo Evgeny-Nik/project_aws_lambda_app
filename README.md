@@ -52,71 +52,70 @@ This workflow zips and uploads Lambda functions to S3 and updates them. It inclu
 
 
 <details>
-<summary>## Reproducing the Project</summary>
+<summary><h2>Reproducing the Project</h2>></summary>
 
 ## Lambda Functions:
 ### Overview
 - **lambda-Backup**
-  - `lambda_function.py`: runs on a cronjob to backup the S3 bucket containing the lambda functions daily, weekly and monthly
+  - `lambda_function.py`: runs on an EventBridge cronjob to backup the S3 bucket containing the lambda functions daily, weekly and monthly
 
-```markdown
+| Required Environment Variables  | Description                         |
+|---------------------------------|-------------------------------------|
+| `SOURCE_BUCKET`                 | Name of Lambda functions' S3 Bucket |
+| `BACKUP_BUCKET`                 | Name of backup S3 Bucket            |
 
-| Required Environment Variables | Description |
-| --- | --- |
-|`SOURCE_BUCKET` | Name of Lambda functions' S3 Bucket |
-|`BACKUP_BUCKET` | Name of backup S3 Bucket |
+| Required Trigger | Type    |
+|------------------|---------|
+| `EventBridge`    | Daily   |
+| `EventBridge`    | Weekly  |
+| `EventBridge`    | Monthly |
 
-| Required Trigger |
-| --- | --- |
-|  `EventBridge` | Daily |
-|  `EventBridge` | Weekly |
-|  `EventBridge` | Monthly |
-```
 - **csv_to_excel**
   - `lambda_function.py`: Converts CSV files to Excel format.
       
 - **lambda_discord_msg**
   - `lambda_function.py`: Sends messages to a Discord channel via a webhook URL.
 
-    Required Environment Variables:
-      - 
-      `DISCORD_URL` | Discord Webhook Url
+| Required Environment Variables | Description         |
+|--------------------------------|---------------------|
+| `DISCORD_URL`                  | Discord Webhook Url |
 
 - **gitlab_create_user**
   - `lambda_function.py`: using a google sheet to obtain user credentials, Creates a new user, group and project in GitLab and adds the user to the new group as a reporter, using the GitLab API.
 
-    Required Environment Variables:
-      -
-      `GITLAB_TOKEN`      | GitLab PAT to manage users, groups, and projects
-      `GITLAB_INSTANCE_ID`| your aws instance id, used to retrieve public ip
-      `GITLAB_GROUP_NAME` | Generic String
-      `GITLAB_GROUP_DESC` | Generic String
+| Required Environment Variables | Description                                      |
+|--------------------------------|--------------------------------------------------|
+| `GITLAB_TOKEN`                 | GitLab PAT to manage users, groups, and projects |
+| `GITLAB_INSTANCE_ID`           | your aws instance id, used to retrieve public ip |
+| `GITLAB_GROUP_NAME`            | Generic String                                   |
+| `GITLAB_GROUP_DESC`            | Generic String                                   |
 
-    Required Google Sheets fields:
-      -
-      `email`
-      `password`
-      `username`
-      `name`
+| Required Google Sheets fields |
+|-------------------------------|
+| `email`                       |
+| `password`                    |
+| `username`                    |
+| `name`                        |
 
       
 - **gitlab_new_project**
   - `lambda_function.py`: Creates a python script from a template and uploads it to S3, and provides the user with the downloads link, the script then creates a new directory with a blank file of the user's choosing, and new project in GitLab using the GitLab API, and pushes the file to the newly opened project.
 
-    Required Environment Variables:
-      -
-      `BUCKET_NAME`       | aws S3 bucket that stores executable script
-      `REGION`            | aws region where your S3 bucket is in
-      `GITLAB_TOKEN`      | GitLab PAT to create a project
-      `GITLAB_INSTANCE_ID`| your aws instance id, used to retrieve public ip
-      `GITLAB_USER`       | username that will own the project
+| Required Environment Variables | Description                                       |
+|--------------------------------|---------------------------------------------------|
+| `BUCKET_NAME`                  | aws S3 bucket that stores executable script       |
+| `REGION`                       | aws region where your S3 bucket is in             |
+| `GITLAB_TOKEN`                 | GitLab PAT to create a project                    |
+| `GITLAB_INSTANCE_ID`           | your aws instance id, used to retrieve public ip  |
+| `GITLAB_USER`                  | username that will own the project                |
       
 - **wikipedia_func**
   - `lambda_function.py`: Fetches the selected subject's Wikipedia's top pages, and stores it in an S3 file for history.
-    Required Environment Variables:
-      -
-      `BUCKET_NAME`       | name of bucket to store wiki search history
-      `FILE_KEY`          | key to history file
+
+| Required Environment Variables | Description                                   |
+|--------------------------------|-----------------------------------------------|
+| `BUCKET_NAME`                  | aws S3 bucket that stores wiki search history |
+| `FILE_KEY`                     | key to history file                           |
 
 ### Setting Up AWS Lambda Function
 
