@@ -72,7 +72,7 @@ jobs:
 
       - name: Zip and upload Lambda function
         run: |
-          file_list=$(grep 'CHANGED_FILES=' changed_files.env | cut -d= -f2)
+          file_list=$(cat changed_files.env)
           for file_path in $file_list; do
             folder_path=$(dirname $file_path)
             cd ${{ github.workspace }}/$folder_path
@@ -84,3 +84,4 @@ jobs:
             function_name=$(basename $folder_path)
             aws lambda update-function-code --function-name $function_name --s3-bucket ${{ secrets.S3_BUCKET_NAME }} --s3-key $folder_path.zip
           done
+          
