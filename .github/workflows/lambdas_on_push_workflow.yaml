@@ -23,10 +23,10 @@ jobs:
       - name: List changed files
         id: file-list
         run: |
-          changed_files=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} |
+          changed_files=$(git diff-tree --no-commit-id --name-only -r HEAD |
                         grep -E -v '^(web_app/|\.github/)' |
                         grep '.py' || true)
-          echo "CHANGED_FILES=$changed_files" > changed_files.env  # Write to environment file
+          echo "$changed_files" > changed_files.env  # Write to environment file
 
       - name: Debug changed files
         run: |
