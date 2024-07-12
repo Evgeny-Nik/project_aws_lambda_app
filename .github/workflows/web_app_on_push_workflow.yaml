@@ -8,6 +8,7 @@ on:
       - 'web_app/**'
       - '.github/workflows/web_app_on_push_workflow.yaml'
 
+
 jobs:
   build_app:
     runs-on: ubuntu-latest
