@@ -52,12 +52,14 @@ This workflow zips and uploads Lambda functions to S3 and updates them. It inclu
 
 
 <details>
-<summary>Reproducing the Project</summary>
+<summary>## Reproducing the Project</summary>
+
 ## Lambda Functions:
 ### Overview
 - **lambda-Backup**
   - `lambda_function.py`: runs on a cronjob to backup the S3 bucket containing the lambda functions daily, weekly and monthly
 
+```markdown
     | Required Environment Variables | Description |
     | --- | --- |
     |`SOURCE_BUCKET` | Name of Lambda functions' S3 Bucket |
@@ -68,7 +70,7 @@ This workflow zips and uploads Lambda functions to S3 and updates them. It inclu
     |  `EventBridge` | Daily |
     |  `EventBridge` | Weekly |
     |  `EventBridge` | Monthly |
-
+```
 - **csv_to_excel**
   - `lambda_function.py`: Converts CSV files to Excel format.
       
