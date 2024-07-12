@@ -52,7 +52,7 @@ This workflow zips and uploads Lambda functions to S3 and updates them. It inclu
 
 
 <details>
-<summary><h2>Reproducing the Project</h2>></summary>
+<summary><h2>Reproducing the Project</h2></summary>
 
 ## Lambda Functions:
 ### Overview
