@@ -76,6 +76,8 @@ jobs:
           for file_path in $file_list; do
             folder_path=$(dirname $file_path)
             echo "Deploying Lambda function in folder: $folder_path"
+            echo "${{ github.workspace }}"
+            ls -la
             cd ${{ github.workspace }}/$folder_path
             pwd
             zip -r $folder_path.zip .
