@@ -37,3 +37,4 @@ def lambda_handler(event, context):
             'statusCode': 500,
             'body': f'An unexpected error occurred: {e}'
         }
+

@@ -49,13 +49,16 @@ def create_gitlab_group(gl, grp_name, grp_description):
         group = gl.groups.create({'name': grp_name, 'path': grp_name})
         group.description = grp_description
         group.save()
+
     except gitlab.exceptions.GitlabCreateError as e:
-        if e.response_code == 409:  # Group already exists
-            print(f"group {grp_name} already exists")
+        if e.response_code == 409 or e.response_code == 400:
+            print(f"Group {grp_name} already exists, or Path {grp_name} is taken")
             group = gl.groups.list(search=grp_name)[0]
         else:
+            print("GitLabCreateError:", e)
             raise
     except Exception as e:
+        print("Error creating GitLab group:", e)
         raise RuntimeError(f"Error creating GitLab group: {str(e)}")
     finally:
         return group
