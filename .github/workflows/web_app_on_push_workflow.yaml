@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: /web_app
+        working-directory: web_app
     env:
       VERSION_FILE: "web_app/version.txt"
 
