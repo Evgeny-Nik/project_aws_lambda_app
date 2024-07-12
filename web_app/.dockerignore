@@ -1,4 +1,8 @@
 *
 
 !*.py
+!version.txt
 !requierements.txt
+!.env
+!*.html
+!templates/

@@ -1,0 +1,41 @@
+name: CI/CD for Flask APP communicating with AWS lambda functions using AWS API Gateway
+
+on:
+  push:
+    branches:
+      - 'master'
+    paths:
+      - 'web_app/**'
+      - '.github/workflows/web_app_on_push_workflow.yaml'
+
+jobs:
+  build_app:
+    runs-on: ubuntu-latest
+    env:
+      VERSION_FILE: "web_app/version.txt"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Read current version
+        id: read_version
+        run: |
+          echo "VERSION=$(cat $VERSION_FILE)" >> $GITHUB_ENV
+          echo "$VERSION"
+
+      - name: Build and Tag Docker Image
+        run: |
+          docker build --build-arg APP_VERSION=${{ env.VERSION }} -t ${{ secrets.DOCKERHUB_USERNAME }}/lambda_app:${{ env.VERSION }} .
+          docker tag ${{ secrets.DOCKERHUB_USERNAME }}/lambda_app:${{ env.VERSION }} ${{ secrets.DOCKERHUB_USERNAME }}/lambda_app:latest
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Docker Images
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/lambda_app:${{ env.VERSION }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/lambda_app:latest
