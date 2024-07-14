@@ -244,4 +244,4 @@ LAMBDA_WIKI="<AWS_API_Gateway_Link_goes_here>/wiki"
 
 ## Links
 
-[DockerHub Project Registry](https://hub.docker.com/repository/docker/evgenyniko/lambda_app_app)
+[DockerHub Project Registry](https://hub.docker.com/repository/docker/evgenyniko/lambda_app)
