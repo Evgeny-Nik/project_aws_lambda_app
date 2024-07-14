@@ -70,7 +70,7 @@ To run the app using Docker:
 
 ## Version
 
-Current version: 1.0.354 (see `version.txt`)
+Current version: 1.0.16 (see `version.txt`)
 
 ## To Do List
 
