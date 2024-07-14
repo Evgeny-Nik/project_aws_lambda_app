@@ -33,6 +33,7 @@ on:
     paths:
       - 'web_app/**'
       - '.github/workflows/web_app_on_push_workflow.yaml'
+      - '!web_app/README-web-app.md'
 ```
 It is also integrated with a git post-commit hook to automatically bump the version of the app on each commit.
 
