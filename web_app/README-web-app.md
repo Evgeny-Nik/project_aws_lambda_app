@@ -1,5 +1,3 @@
-Sure, here's a similar README for the `web_app` located at `https://github.com/Evgeny-Nik/project_aws_lambda_app/web_app`:
-
 # AWS Lambda Web App
 
 This is a Python Flask application that interacts with AWS Lambda functions. The app handles user requests, sends data to AWS Lambda, and displays the results on a web page.
