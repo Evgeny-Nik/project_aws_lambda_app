@@ -4,6 +4,7 @@ import base64
 import os
 from dotenv import load_dotenv  # to load api_key from .env file together with os.getenv()
 
+
 app = Flask(__name__)
 
 load_dotenv()
