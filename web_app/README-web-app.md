@@ -74,7 +74,7 @@ Current version: 1.0.16 (see `version.txt`)
 
 ## To Do List
 
-- [ ] Add web application tests
+- [ ] Add flask web application tests
 - [ ] Add HTTPS support
 - [ ] Set up history, logging and monitoring functions (MongoDB, Elastik Stack, Prometheu/Loki + Grafana)
 - [ ] Implement additional AWS Lambda functions

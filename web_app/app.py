@@ -6,7 +6,6 @@ from dotenv import load_dotenv  # to load api_key from .env file together with o
 
 app = Flask(__name__)
 
-
 load_dotenv()
 
 LAMBDA_CSV = os.getenv('LAMBDA_CSV')
