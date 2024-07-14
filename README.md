@@ -223,11 +223,11 @@ LAMBDA_WIKI="<AWS_API_Gateway_Link_goes_here>/wiki"
 - [ ] Integrate HTTPS support for the web app via Let's Encrypt.
 
 ## Links
-[csv_to_excel README](csv_to_excel/README.md)
-[gitlab_user_create README](gitlab_user_create/README.md)
-[gitlab_new_project](gitlab_new_project/README.md)
-[lambda_discord_msg README](lambda_discord_msg/README.md)
-[lambda-Backup](lambda-Backup/README.md)
-[wikipedia_func](wikipedia_func/README.md)
-[web_app README](web_app/README.md)
-[DockerHub Project Registry](https://hub.docker.com/repository/docker/evgenyniko/lambda_app)
+- [csv_to_excel README](csv_to_excel/README.md)
+- [gitlab_user_create README](gitlab_user_create/README.md)
+- [gitlab_new_project](gitlab_new_project/README.md)
+- [lambda_discord_msg README](lambda_discord_msg/README.md)
+- [lambda-Backup](lambda-Backup/README.md)
+- [wikipedia_func](wikipedia_func/README.md)
+- [web_app README](web_app/README.md)
+- [DockerHub Project Registry](https://hub.docker.com/repository/docker/evgenyniko/lambda_app)
