@@ -37,32 +37,6 @@ on:
 ```
 It is also integrated with a git post-commit hook to automatically bump the version of the app on each commit.
 
-```bash
-#!/bin/bash
-
-VERSION_FILE="web_app/version.txt"
-
-# Retrieve the commits being pushed (assuming current and upstream branch)
-OLD_COMMIT=$(git rev-parse @{u})
-NEW_COMMIT=$(git rev-parse HEAD)
-
-# Check if any files in the web_app directory have been modified in the push
-if git diff --name-only $OLD_COMMIT $NEW_COMMIT | grep -q '^web_app/' && ! git diff --name-only $OLD_COMMIT $NEW_COMMIT | grep -q '^web_app/version.txt'; then
-    # Increment version number
-    if [[ -f $VERSION_FILE ]]; then
-        current_version=$(cat $VERSION_FILE)
-        IFS='.' read -r major minor patch <<< "$current_version"
-        patch=$((patch + 1))
-        new_version="${major}.${minor}.${patch}"
-        echo "$new_version" > $VERSION_FILE
-        # Add the version file change to the last commit
-        git add $VERSION_FILE
-		git commit --amend --no-edit
-    fi
-fi
-
-exit 0
-```
 ### 2. CI/CD for Lambda Functions
 
 This workflow zips and uploads Lambda functions to S3 and updates them. It includes:
