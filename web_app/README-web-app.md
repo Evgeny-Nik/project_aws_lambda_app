@@ -70,11 +70,11 @@ To run the app using Docker:
 
 ## Version
 
-Current version: 1.0.16 (see `version.txt`)
+Current version: 1.0.354 (see `version.txt`)
 
 ## To Do List
 
-- [ ] Add flask web application tests
+- [ ] Add web application tests
 - [ ] Add HTTPS support
 - [ ] Set up history, logging and monitoring functions (MongoDB, Elastik Stack, Prometheu/Loki + Grafana)
 - [ ] Implement additional AWS Lambda functions
