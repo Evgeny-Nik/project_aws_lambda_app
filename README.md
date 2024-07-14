@@ -35,6 +35,7 @@ on:
       - '.github/workflows/web_app_on_push_workflow.yaml'
 ```
 It is also integrated with a git post-commit hook to automatically bump the version of the app on each commit.
+
 ```bash
 #!/bin/bash
 
@@ -63,6 +64,14 @@ exit 0
 ```
 ### 2. CI/CD for Lambda Functions
 
+This workflow zips and uploads Lambda functions to S3 and updates them. It includes:
+
+- **List and Filter Changed Python Files**: Identifies and lists changed Python files.
+- **Run Tests on Changed Files**: Runs tests on the identified changed files.
+- **Zip and Upload Lambda Function**: Zips the changed files, uploads them to S3, and updates the corresponding Lambda functions.
+
+#### Trigger
+
 This workflow is triggered on a push event to the `master` branch in the following paths:
 ```yaml
 on:
@@ -73,11 +82,6 @@ on:
       - '**/lambda_function.py'
       - '.github/workflows/lambdas_on_push_workflow.yaml'
 ```
-This workflow zips and uploads Lambda functions to S3 and updates them. It includes:
-
-- **List and Filter Changed Python Files**: Identifies and lists changed Python files.
-- **Run Tests on Changed Files**: Runs tests on the identified changed files.
-- **Zip and Upload Lambda Function**: Zips the changed files, uploads them to S3, and updates the corresponding Lambda functions.
 
 <details>
 <summary><h2>Reproducing the Project</h2></summary>
